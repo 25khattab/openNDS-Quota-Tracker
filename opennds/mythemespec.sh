@@ -24,9 +24,9 @@ header() {
 				<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
 				<title>Signin</title>
 				<!-- Bootstrap core CSS -->
-				<link href=\"http://192.168.1.1:2050/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
-				<link href=\"http://192.168.1.1:2050/bootstrap/css/signin.css\" rel=\"stylesheet\">
-				<script src=\"http://192.168.1.1:2050/bootstrap/js/bootstrap.min.js\"></script>
+				<link href=\"/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
+				<link href=\"/bootstrap/css/signin.css\" rel=\"stylesheet\">
+				<script src=\"/bootstrap/js/bootstrap.min.js\"></script>
 				<style>
 				  .bd-placeholder-img {
 					font-size: 1.125rem;
@@ -124,8 +124,6 @@ login_form() {
 			<p class=\"mt-5 mb-3 text-muted\">© 2017–$year</p>
 		</form>
 	</main>
-	</body>
-	</html>
 			"
 	footer
 	
@@ -236,7 +234,7 @@ check_account() {
 		parse_json
 
 		if [ "$state" = "Authenticated"  ]; then
-			total=$(($total+$upload_this_session+$download_this_session))
+			total=$(($total+($upload_this_session+$download_this_session)/1048576))
 		fi
 	done
 }
