@@ -27,7 +27,7 @@ Every 3 mins it will check for all the devices if the exceeded the current accou
       
       check this to see how to add drive to your system for openwrt otherwise check with yourself : 
       
-          https://openwrt.org/docs/guide-user/storage/usb-drives-quickstart
+      https://openwrt.org/docs/guide-user/storage/usb-drives-quickstart
 # Setup
 
 1. After installing opennds type this in the terminal : 
