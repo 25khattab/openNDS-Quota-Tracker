@@ -102,5 +102,5 @@ Every connected Device to any account it will be disconnect every 12 hours you c
 
       if you are using openwrt just write this in terminal 
 
-            ```*/5 * * * * /usr/bin/check_devices.sh```
+            */5 * * * * /usr/bin/check_devices.sh
 5. Thats's it everything should be working right now
