@@ -26,7 +26,6 @@ header() {
 				<!-- Bootstrap core CSS -->
 				<link href=\"/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
 				<link href=\"/bootstrap/css/signin.css\" rel=\"stylesheet\">
-				<script src=\"/bootstrap/js/bootstrap.min.js\"></script>
 				<style>
 				  .bd-placeholder-img {
 					font-size: 1.125rem;
@@ -42,11 +41,6 @@ header() {
 					}
 				  }
 				</style>
-				<script>
-					function myFunction() {
-					  location.replace(\"https://www.google.com\")
-					}
-					</script>
 				<title>$gatewayname</title>
 			</head>
 			<body class=\"text-center\">
@@ -74,7 +68,7 @@ name_email_login() {
 	# The client is required to accept the terms of service.
 
 	if [ ! -z "$username" ] && [ ! -z "$password" ]; then
-		file="/mnt/sda1/users.txt"
+		file="/mnt/sda1/users.txt" #the users file that has the data
 		flag="false"
 		
 		while read user pw aq; do
@@ -167,6 +161,8 @@ landing_page() {
 		# Add the user credentials to $userinfo for the log
 		userinfo="$userinfo, username=$username, password=$password"
 
+
+		#check if the account has avalibale quota or not
 		check_account
 		
 		
@@ -178,8 +174,9 @@ landing_page() {
 				
 				echo "
 						<div style=\"width:100%;max-width:400px;padding:15px;margin:auto\" >
-							<h2>أهلا أهلا نورت يا بيه</h2>
-							<button class=\"btn btn-primary mt-3\" onclick=\"myFunction()\">Continue</button>
+							<h2>أهلا أهلا نورت يا بيه فاضلك $total ميجا</h2> " #welcome message
+							"
+							<a href=\"https://www.google.com\"class=\"btn btn-primary mt-3\">Continue</a>
 						</div>
 					"
 			else
@@ -234,7 +231,7 @@ check_account() {
 		parse_json
 
 		if [ "$state" = "Authenticated"  ]; then
-			total=$(($total+($upload_this_session+$download_this_session)/1048576))
+			total=$(($total+($upload_this_session+$download_this_session)/1048576)) # the 1048576 is to convert bytes to megabytes
 		fi
 	done
 }
