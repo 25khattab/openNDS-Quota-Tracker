@@ -166,16 +166,17 @@ landing_page() {
 		check_account
 		
 		
-		$account_quota=$(($account_quota+0))
+		account_quota=$(($account_quota+0))
 		if [ $total -lt $account_quota ]; then
 			# authenticate and write to the log - returns with $ndsstatus set
 			auth_log
 			if [ "$ndsstatus" = "authenticated" ]; then
 				
+				account_giga_left=$(($account_quota/1024))
+				# Welcome Messeage in the h2
 				echo "
 						<div style=\"width:100%;max-width:400px;padding:15px;margin:auto\" >
-							<h2>أهلا أهلا نورت يا بيه فاضلك $total ميجا</h2> " #welcome message
-							"
+							<h2>أهلا أهلا نورت يا بيه فاضلك $account_giga_left جيجا</h2>
 							<a href=\"https://www.google.com\"class=\"btn btn-primary mt-3\">Continue</a>
 						</div>
 					"
@@ -268,6 +269,8 @@ upload_rate="0"
 download_rate="0"
 upload_quota="0"
 download_quota="0"
+
+
 
 quotas="$session_length $upload_rate $download_rate $upload_quota $download_quota"
 
