@@ -12,5 +12,5 @@ config opennds
 	option login_option_enabled '3'
 	option themespec_path '/usr/lib/opennds/mythemespec.sh'
 	option binauth '/usr/lib/opennds/binauth_log.sh'
-	option preauthidletimeout '3'
-	option authidletimeout '3'
+	option preauthidletimeout '5'
+	option authidletimeout '720'
