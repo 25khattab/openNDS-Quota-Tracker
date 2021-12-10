@@ -27,7 +27,7 @@ It will check if that username and password exist and if they have quota to allo
 
 If another device tried to access the internet using the same account it will check if the current devices connected to the internet using the same account exceeded the quota or not, if not they will access the internet.
 
-Every 5 mins it will check for all the devices if the exceeded the current account quota or not if they exceeded it it will disconnect them, and when devices log out or disconnects from wifi it will automaticly compute the quota they used and decrease it from the account quota.
+Every 10 mins it will check for all the devices if the exceeded the current account quota or not if they exceeded it it will disconnect them, and when devices log out or disconnects from wifi it will automaticly compute the quota they used and decrease it from the account quota.
 
 Every connected Device to any account it will be disconnect every 12 hours you can change it.
 
@@ -101,6 +101,11 @@ Every connected Device to any account it will be disconnect every 12 hours you c
 4. Now you have to turn on the script that will check on the accounts every 5 mins,search for scheduling for your operating system
 
       if you are using openwrt just write this in terminal 
-
-            */5 * * * * /usr/bin/check_devices.sh
+            crontab -e 
+        then press i and paster this
+            */10 * * * * /bin/sh /usr/bin/check_devices.sh
+        then press escape button and press and type this
+            :w
+            :q
+        this is based on vim editor and check this link for more info https://openwrt.org/docs/guide-user/base-system/cron
 5. Thats's it everything should be working right now

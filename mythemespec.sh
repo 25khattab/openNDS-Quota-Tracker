@@ -14,9 +14,8 @@
 generate_splash_sequence() {
 	name_email_login
 }
-
 header() {
-# Define a common header html for every page served
+	# Define a common header html for every page served
 	echo "<!DOCTYPE html>
 		  <html lang=\"en\">
 			<head>
@@ -172,11 +171,12 @@ landing_page() {
 			auth_log
 			if [ "$ndsstatus" = "authenticated" ]; then
 				
-				account_giga_left=$(($account_quota/1024))
+				account_giga_left=$((($account_quota-$total)/1024))
 				# Welcome Messeage in the h2
 				echo "
 						<div style=\"width:100%;max-width:400px;padding:15px;margin:auto\" >
 							<h2>أهلا أهلا نورت يا بيه فاضلك $account_giga_left جيجا</h2>
+							<br/>
 							<a href=\"https://www.google.com\"class=\"btn btn-primary mt-3\">Continue</a>
 						</div>
 					"
