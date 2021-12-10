@@ -269,7 +269,11 @@ upload_rate="0"
 download_rate="0"
 upload_quota="0"
 download_quota="0"
-
+if [ "$username" = "guest"  ]; then
+		echo "this is gues" >> "/tmp/tmp.log"
+		$upload_rate="50"
+		$download_rate="2000"
+fi
 
 
 quotas="$session_length $upload_rate $download_rate $upload_quota $download_quota"
