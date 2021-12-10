@@ -184,10 +184,10 @@ landing_page() {
 				echo "auth_fail ndsstatus"
 			fi
 		else
-		
+			#the account doesn't have enough quota 
 			echo "
 				<div style=\"width:100%;max-width:400px;padding:15px;margin:auto\" >
-					<h2>account quota is exceeded</h2>
+					<h2>خلصت النت بتاعك يا عسل اشوفك الشهر اللي جاي</h2>
 				</div>"
 		fi
 		footer

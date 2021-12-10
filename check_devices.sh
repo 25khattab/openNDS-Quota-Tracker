@@ -38,7 +38,7 @@ do_ndsctl () {
 	done
 }
 
-
+#getting all devices that are connected to the account being searched
 check_account() {
 	logfile="/tmp/ndslog/binauthlog.log"
 	userstr="custom=$username"
@@ -63,7 +63,7 @@ check_account() {
 	done
 }
 
-
+#running the scipt only if opennds is working
 if [[  $(pgrep opennds) ]] ;then
 	while read user pw aq; do
 		
@@ -73,7 +73,6 @@ if [[  $(pgrep opennds) ]] ;then
 		if [ ! -z "$username" ] && [ ! -z "$password" ]; then
 			check_account
 			if [ $total -ge $account_quota ]; then
-				echo "im here"
 				for token in $tokens; do
 					ndsctlcmd="deauth $token"
 					do_ndsctl
