@@ -8,7 +8,6 @@
 #
 
 # This is the Click To Continue Theme Specification (ThemeSpec) File with custom placeholders.
-
 # functions:
 
 generate_splash_sequence() {
@@ -170,7 +169,7 @@ landing_page() {
 			# authenticate and write to the log - returns with $ndsstatus set
 			auth_log
 			if [ "$ndsstatus" = "authenticated" ]; then
-				
+				current_user=$username
 				account_giga_left=$((($account_quota-$total)/1024))
 				# Welcome Messeage in the h2
 				echo "
@@ -269,10 +268,11 @@ upload_rate="0"
 download_rate="0"
 upload_quota="0"
 download_quota="0"
+datetime=$(date)
 if [ "$username" = "guest"  ]; then
-		echo "this is gues" >> "/tmp/tmp.log"
-		$upload_rate="50"
-		$download_rate="2000"
+		echo "$datetime this is guest" >> "/tmp/tmp.log"
+		upload_rate="50"
+	    download_rate="2000"
 fi
 
 

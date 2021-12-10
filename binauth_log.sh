@@ -233,7 +233,7 @@ else
 	datetime=$(date)
 	currentUser=$(cat /tmp/ndslog/binauthlog.log | awk -F "token=$7" 'NF>1{print $2}'| awk -F"custom=" 'NF>1{print $2}' | awk -F", " '{print $1}' | sort |uniq)
 	totalUsed=$((($3+$4)/1048576))
-	echo "$date Im in with $action $currentUser $totalUsed" >> "/mnt/sda1/temp.log"
+	echo "$datetime Im in with $action $currentUser $totalUsed" >> "/mnt/sda1/temp.log"
 	file="/mnt/sda1/users.txt"
 	cp $file "/mnt/sda1/users_tmp.txt"
 	while read user pw aq; do
