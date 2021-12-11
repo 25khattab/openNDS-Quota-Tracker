@@ -99,19 +99,8 @@ Every connected Device to any account it will be disconnect every 12 hours you c
     4. mythemespec.sh line 77 : ```file="/mnt/sda1/users.txt"``` again /mnt/sda1 is your mount point.
     5. /etc/config/opennds : option authidletimeout '720' change the `720` to any time you prefer so the device automaticly disconnect from the account (time in minutes)
 4. Now you have to turn on the script that will check on the accounts every 5 mins,search for scheduling for your operating system
-
-      if you are using openwrt just write this in terminal 
-      
-      ```crontab -e```
-            
-      then press i and paster this
         
       ```*/10 * * * * /bin/sh /usr/bin/check_devices.sh```
             
-      then press escape button and press and type this
-       
-            :w
-            :q
-            
-      this is based on vim editor and check this link for more info https://openwrt.org/docs/guide-user/base-system/cron
+     for openwrt check this link for more info https://openwrt.org/docs/guide-user/base-system/cron
 5. Thats's it everything should be working right now
