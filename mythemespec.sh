@@ -166,6 +166,14 @@ landing_page() {
 		
 		account_quota=$(($account_quota+0))
 		if [ $total -lt $account_quota ]; then
+		
+			#limit download rate and upload if the user is guest
+			if [ "$username" = "guest"  ]; then
+					upload_rate="50"
+					download_rate="2000"
+			fi
+			quotas="$session_length $upload_rate $download_rate $upload_quota $download_quota"
+
 			# authenticate and write to the log - returns with $ndsstatus set
 			auth_log
 			if [ "$ndsstatus" = "authenticated" ]; then
@@ -268,12 +276,7 @@ upload_rate="0"
 download_rate="0"
 upload_quota="0"
 download_quota="0"
-datetime=$(date)
-if [ "$username" = "guest"  ]; then
-		echo "$datetime this is guest" >> "/tmp/tmp.log"
-		upload_rate="50"
-	    download_rate="2000"
-fi
+
 
 
 quotas="$session_length $upload_rate $download_rate $upload_quota $download_quota"
