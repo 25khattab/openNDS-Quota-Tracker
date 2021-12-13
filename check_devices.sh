@@ -1,4 +1,8 @@
 #!/bin/sh
+# this script is being called every 10 mins to check if the current connected devices
+# have consumed quota more than it should have.
+# and disconnects them if they reached the maximum amount of quota
+
 
 parse_json() {
 
