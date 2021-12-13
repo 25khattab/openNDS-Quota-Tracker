@@ -215,9 +215,16 @@ elif [ $action = "ndsctl_auth" ]; then
 	# $6 session end time
 	# $7 client token
 	# $8 custom data string
-
+	
 	customdata_enc=$8
 	customdata=$(printf "${customdata_enc//%/\\x}")
+	###
+	# for debugging
+	datetime=$(date)
+	echo "$datetime Im in with $2 $action $customdata_enc" >> "/mnt/sda1/in.log"
+	###
+	
+	
 	log_entry="method=$1, clientmac=$2, bytes_incoming=$3, bytes_outgoing=$4, session_start=$5, session_end=$6, token=$7, custom=$customdata_enc"
 
 else
@@ -230,10 +237,15 @@ else
 	# $5 session start time
 	# $6 session end time
 	# $7 client token
+
 	datetime=$(date)
 	currentUser=$(cat /tmp/ndslog/binauthlog.log | awk -F "token=$7" 'NF>1{print $2}'| awk -F"custom=" 'NF>1{print $2}' | awk -F", " '{print $1}' | sort |uniq)
 	totalUsed=$((($3+$4)/1048576))
-	echo "$datetime Im in with $action $currentUser $totalUsed" >> "/mnt/sda1/temp.log"
+	###
+	# for debugging
+	echo "$datetime Im out with $2 $action $currentUser $totalUsed MB" >> "/mnt/sda1/out.log"
+	###
+
 	file="/mnt/sda1/users.txt"
 	cp $file "/mnt/sda1/users_tmp.txt"
 	while read user pw aq; do
