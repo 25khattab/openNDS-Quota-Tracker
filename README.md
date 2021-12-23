@@ -69,35 +69,17 @@ Every connected Device to any account it will be disconnect every 12 hours you c
     and 2 new files : ```/usr/lib/check_devices.sh``` and ```/mnt/sda1/users.txt```
     
 3. Check the files :
-    1. binauth_log.sh from line 235 to 248 :
 
-            currentUser=$(cat /tmp/ndslog/binauthlog.log | awk -F "token=$7" 'NF>1{print $2}'| awk -F"custom=" 'NF>1{print $2}' | awk -F", " '{print $1}' | sort |uniq)
-            totalUsed=$(($3/1048576+$4/1048576))
-            echo "Im in with $action $currentUser $totalUsed" >> "/mnt/sda1/temp.log"
-            file="/mnt/sda1/users.txt"
-            cp $file "/mnt/sda1/users_tmp.txt"
-            echo "entering the file right now" >> "/mnt/sda1/test.log"
-            while read user pw aq; do
-                username=$user
-                password=$pw
-                account_quota=$(($aq+0))
-                if [ ! -z "$username" ] && [ ! -z "$password" ] && [ "$currentUser" = "$username" ]; then
-                    new_account_quota=$(($account_quota-$totalUsed))
-                    sed -i "s/$username\t$password\t$account_quota/$username\t$password\t$new_account_quota/" $file
-                fi
-            done < "/mnt/sda1/users_tmp.txt"
-            rm "/mnt/sda1/users_tmp.txt"
-            
-        the temp.log file is for debugging, remember /mnt/sda1 is your mount point donot write to many times on the router flash memory.
-    2. check_devices.sh line 83 : ```done < "/mnt/sda1/users.txt"``` again /mnt/sda1 is your mount point.
-    3. users.txt it should be something like this
+      1. check those files  ```/usr/lib/opennds/bin/binauth_log.sh``` and ```/usr/lib/opennds/bin/mythemespec.sh```
+            and ```/usr/lib/check_devices.sh``` and for every ```/mnt/sda1``` change it for your mount point.
+      2. users.txt it should be something like this
         
-        ```
-        omar    omar123    1024
-        ahmed   ahmed123   1024
-        ```
-    4. mythemespec.sh line 77 : ```file="/mnt/sda1/users.txt"``` again /mnt/sda1 is your mount point.
-    5. /etc/config/opennds : option authidletimeout '720' change the `720` to any time you prefer so the device automaticly disconnect from the account (time in minutes)
+              
+              omar    omar123    1024
+              ahmed   ahmed123   1024
+              guest   guest      1024 
+              
+      3. /etc/config/opennds : option authidletimeout '720' change the `720` to any time you prefer so the device automaticly disconnect from the account (time in minutes)
 4. Now you have to turn on the script that will check on the accounts every 10 mins,search for scheduling for your operating system
         
     ```*/10 * * * * /bin/sh /usr/bin/check_devices.sh```
