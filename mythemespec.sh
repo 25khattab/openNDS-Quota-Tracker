@@ -170,7 +170,7 @@ landing_page() {
 			#limit download rate and upload if the user is guest
 			if [ "$username" = "guest"  ]; then
 					upload_rate="50"
-					download_rate="2000"
+					download_rate="1000"
 			fi
 			quotas="$session_length $upload_rate $download_rate $upload_quota $download_quota"
 

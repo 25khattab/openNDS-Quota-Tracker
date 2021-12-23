@@ -254,7 +254,7 @@ else
 		account_quota=$(($aq+0))
 		if [ ! -z "$username" ] && [ ! -z "$password" ] && [ "$currentUser" = "$username" ]; then
 			new_account_quota=$(($account_quota-$totalUsed))
-			sed -i "s/$username\t$password\t$account_quota/$username\t$password\t$new_account_quota/" $file
+			sed -i "s/$username $password $account_quota/$username $password $new_account_quota/" $file
 		fi
 	done < "/mnt/sda1/users_tmp.txt"
 	rm "/mnt/sda1/users_tmp.txt"
