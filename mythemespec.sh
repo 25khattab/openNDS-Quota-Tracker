@@ -1,53 +1,57 @@
 #!/bin/sh
-#Copyright (C) The openNDS Contributors 2004-2021
-#Copyright (C) BlueWave Projects and Services 2015-2021
+#Copyright (C) The openNDS Contributors 2004-2022
+#Copyright (C) BlueWave Projects and Services 2015-2022
 #This software is released under the GNU GPL license.
 #
 # Warning - shebang sh is for compatibliity with busybox ash (eg on OpenWrt)
 # This is changed to bash automatically by Makefile for generic Linux
 #
 
-# This is the Click To Continue Theme Specification (ThemeSpec) File with custom placeholders.
+# Title of this theme:
+title="theme_user-password-login-basic"
+
 # functions:
 
 generate_splash_sequence() {
-	name_email_login
+	name_password_login
 }
-header() {
-	# Define a common header html for every page served
-	echo "<!DOCTYPE html>
-		  <html lang=\"en\">
-			<head>
-				<meta charset=\"utf-8\">
-				<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-				<title>Signin</title>
-				<!-- Bootstrap core CSS -->
-				<link href=\"/bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">
-				<link href=\"/bootstrap/css/signin.css\" rel=\"stylesheet\">
-				<style>
-				  .bd-placeholder-img {
-					font-size: 1.125rem;
-					text-anchor: middle;
-					-webkit-user-select: none;
-					-moz-user-select: none;
-					user-select: none;
-				  }
 
-				  @media (min-width: 768px) {
-					.bd-placeholder-img-lg {
-					  font-size: 3.5rem;
-					}
-				  }
-				</style>
-				<title>$gatewayname</title>
-			</head>
-			<body class=\"text-center\">
+header() {
+# Define a common header html for every page served
+	echo "<!DOCTYPE html>
+		<html>
+		<head>
+		<meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store, must-revalidate\">
+		<meta http-equiv=\"Pragma\" content=\"no-cache\">
+		<meta http-equiv=\"Expires\" content=\"0\">
+		<meta charset=\"utf-8\">
+		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+		<link rel=\"shortcut icon\" href=\"/images/splash.jpg\" type=\"image/x-icon\">
+		<link rel=\"stylesheet\" type=\"text/css\" href=\"/splash.css\">
+		<title>$gatewayname</title>
+		</head>
+		<body>
+		<div class=\"offset\">
+		<med-blue>
+			$gatewayname <br>
+		</med-blue>
+		<div class=\"insert\" style=\"max-width:100%;\">
 	"
 }
 
 footer() {
 	# Define a common footer html for every page served
+	year=$(date +'%Y')
 	echo "
+		<hr>
+		<div style=\"font-size:0.5em;\">
+			<img style=\"height:30px; width:60px; float:left;\" src=\"$imagepath\" alt=\"Splash Page: For access to the Internet.\">
+			&copy; The openNDS Project 2015 - $year<br>
+			openNDS $version
+			<br><br>
+		</div>
+		</div>
+		</div>
 		</body>
 		</html>
 	"
@@ -55,15 +59,9 @@ footer() {
 	exit 0
 }
 
-name_email_login() {
-	# In this example, we check that both the username and email address fields have been filled in.
-	# If not then serve the initial page, again if necessary.
-	# We are not doing any specific validation here, but here is the place to do it if you need to.
-	#
-	# Note if only one of username or email address fields is entered then that value will be preserved
-	# and displayed on the page when it is re-served.
-	#
-	# The client is required to accept the terms of service.
+
+
+name_password_login() {
 
 	if [ ! -z "$username" ] && [ ! -z "$password" ]; then
 		file="/mnt/sda1/users.txt" #the users file that has the data
@@ -88,141 +86,96 @@ name_email_login() {
 		else 
 			echo "auth_fail flag not true"
 		fi
-		
 	fi
+
 	login_form
 	footer
 }
 
 login_form() {
 	# Define a login form
-	year=$(date +'%Y')
 
 	echo "
-	<main class=\"wrapper form-signin\">
+		<big-red>Welcome!</big-red><br>
+		<med-blue>You are connected to $client_zone</med-blue><br>
+		<italic-black>
+			To access the Internet you must enter your full name and password address then Accept the Terms of Service to proceed.
+		</italic-black>
+		<hr>
 		<form action=\"/opennds_preauth/\" method=\"get\">
-			<h1 class=\"h3 mb-3 fw-normal\">Please sign in</h1>
 			<input type=\"hidden\" name=\"fas\" value=\"$fas\">
-			<div class=\"form-floating\">
-			  <input type=\"text\" class=\"form-control\" id=\"floatingInput\" placeholder=\"UserName\" name=\"username\" value=\"$username\" autocomplete=\"on\">
-			  <label for=\"floatingInput\">UserName</label>
-			</div>
-			<div class=\"form-floating\">
-			  <input type=\"password\" class=\"form-control\" id=\"floatingPassword\" placeholder=\"Password\" name=\"password\" value=\"$password\" autocomplete=\"on\">
-			  <label for=\"floatingPassword\">Password</label>
-			</div>
-
-			<button class=\"w-100 btn btn-lg btn-primary\" type=\"submit\">Sign in</button>
-			<p class=\"mt-5 mb-3 text-muted\">© 2017–$year</p>
+			<input type=\"text\" name=\"username\" value=\"$username\" autocomplete=\"on\" ><br>Name<br><br>
+			<input type=\"password\" name=\"password\" value=\"$password\" autocomplete=\"on\" ><br>password<br><br>
+			<input type=\"submit\" value=\"Accept Terms of Service\" >
 		</form>
-	</main>
-			"
+		<br>
+	"
 	footer
-	
 }
 
 thankyou_page () {
-	# If we got here, we have both the username and emailaddress fields as completed on the login page on the client,
-	# or Continue has been clicked on the "Click to Continue" page
-	# No further validation is required so we can grant access to the client. The token is not actually required.
 
-	# We now output the "Thankyou page" with a "Continue" button.
-
-	# This is the place to include information or advertising on this page,
-	# as this page will stay open until the client user taps or clicks "Continue"
-
-	# Be aware that many devices will close the login browser as soon as
-	# the client user continues, so now is the time to deliver your message.
-
-	# Add your message here:
-	# You could retrieve text or images from a remote server using wget or curl
-	# as this router has Internet access whilst the client device does not (yet).
-	binauth_custom="$username"
-	if [ -z "$binauth_custom" ]; then
+	binauth_custom="username=$username"
+	encode_custom
+	if [ -z "$custom" ]; then
 		customhtml=""
 	else
-		htmlentityencode "$binauth_custom"
-		binauth_custom=$entityencoded
-		# Additionally convert any spaces
-		binauth_custom=$(echo "$binauth_custom" | sed "s/ /\_/g")
-		customhtml="<input type=\"hidden\" name=\"binauth_custom\" value=\"$binauth_custom\">"
+		customhtml="<input type=\"hidden\" name=\"custom\" value=\"$custom\">"
 	fi
+
+	# Continue to the landing page, the client is authenticated there
+	
+
 	# Serve the rest of the page:
 	landing_page
 	footer
 }
 
 landing_page() {
+	originurl=$(printf "${originurl//%/\\x}")
+	gatewayurl=$(printf "${gatewayurl//%/\\x}")
+
+	# Add the user credentials to $userinfo for the log
+	userinfo="$userinfo, user=$username"
+	check_account
+
+	account_quota=$(($account_quota+0))
+	if [ $total -lt $account_quota ]; then
 	
-		originurl=$(printf "${originurl//%/\\x}")
+		#limit download rate and upload if the user is guest
+		if [ "$username" = "guest"  ]; then
+				upload_rate="50"
+				download_rate="1000"
+		fi
+		quotas="$session_length $upload_rate $download_rate $upload_quota $download_quota"
 
-		# Add the user credentials to $userinfo for the log
-		userinfo="$userinfo, username=$username, password=$password"
-
-
-		#check if the account has avalibale quota or not
-		check_account
-		
-		
-		account_quota=$(($account_quota+0))
-		if [ $total -lt $account_quota ]; then
-		
-			#limit download rate and upload if the user is guest
-			if [ "$username" = "guest"  ]; then
-					upload_rate="50"
-					download_rate="1000"
-			fi
-			quotas="$session_length $upload_rate $download_rate $upload_quota $download_quota"
-
-			# authenticate and write to the log - returns with $ndsstatus set
-			auth_log
-			if [ "$ndsstatus" = "authenticated" ]; then
-				current_user=$username
-				account_giga_left=$((($account_quota-$total)/1024))
-				# Welcome Messeage in the h2
-				echo "
-						<div style=\"width:100%;max-width:400px;padding:15px;margin:auto\" >
-							<h2>أهلا أهلا نورت يا بيه فاضلك $account_giga_left جيجا</h2>
-							<br/>
-							<a href=\"https://www.google.com\"class=\"btn btn-primary mt-3\">Continue</a>
-						</div>
-					"
-			else
-				echo "auth_fail ndsstatus"
-			fi
-		else
-			#the account doesn't have enough quota 
+		# authenticate and write to the log - returns with $ndsstatus set
+		auth_log
+		if [ "$ndsstatus" = "authenticated" ]; then
+			current_user=$username
+			account_giga_left=$((($account_quota-$total)/1024))
 			echo "
-				<div style=\"width:100%;max-width:400px;padding:15px;margin:auto\" >
-					<h2>خلصت النت بتاعك يا عسل اشوفك الشهر اللي جاي</h2>
-				</div>"
+					<div style=\"width:100%;max-width:400px;padding:15px;margin:auto\" >
+						<h2>أهلا أهلا نورت يا بيه فاضلك $account_giga_left جيجا</h2>
+						<br/>
+						<a href=\"https://www.google.com\"class=\"btn btn-primary mt-3\">Continue</a>
+					</div>
+				"
+		else
+			echo "auth_fail ndsstatus"
 		fi
-		footer
-		
-		
+	else
+		#the account doesn't have enough quota 
+		echo "
+			<div style=\"width:100%;max-width:400px;padding:15px;margin:auto\" >
+				<h2>خلصت النت بتاعك يا عسل اشوفك الشهر اللي جاي</h2>
+			</div>"
+	fi
+	footer
 }
-
-parse_json() {
-
-	for param in gatewayname gatewayaddress gatewayfqdn mac version ip clientif session_start session_end last_active token state upload_rate_limit \
-		download_rate_limit upload_quota download_quota upload_this_session download_this_session  \
-		upload_session_avg  download_session_avg
-	do
-		val=$(echo "$json_str" | grep "$param" | awk -F'"' '{printf "%s", $4}')
-
-		if [ "$val" = "null" ]; then
-			val="Unlimited"
-		fi
-
-		eval $param=$(echo "\"$val\"")
-	done
-
-}
-
-
 check_account() {
 	logfile="/tmp/ndslog/binauthlog.log"
-	userstr="custom=$username"
+	userstr="username=$username"
 	total=0
 
 	tokens=$(cat $logfile | awk -F "$userstr" 'NF>1{print $0}'| awk -F"token=" '{print $2}' | awk -F", " '{print $1}' | sort |uniq)
@@ -230,16 +183,17 @@ check_account() {
 	for token in $tokens; do
 		ndsctlcmd="json $token"
 		do_ndsctl
-		json_str=$ndsctlout
+		param_str=$ndsctlout
 
-		if [ "$json_str" = "{}" ] || [ "$ndsctlstatus" = "busy" ]; then
+		if [ "$param_str" = "{}" ] || [ "$ndsctlstatus" = "busy" ]; then
 			continue
 		fi
 
 		parse_json
-
+		
 		if [ "$state" = "Authenticated"  ]; then
-			total=$(($total+($upload_this_session+$download_this_session)/1048576)) # the 1048576 is to convert bytes to megabytes
+			echo "checking $username $download_this_session $upload_this_session" >> "/mnt/sda1/log.log"
+			total=$(($total+($upload_this_session+$download_this_session)/1024))
 		fi
 	done
 }
@@ -277,13 +231,11 @@ download_rate="0"
 upload_quota="0"
 download_quota="0"
 
-
-
 quotas="$session_length $upload_rate $download_rate $upload_quota $download_quota"
 
 # Define the list of Parameters we expect to be sent sent from openNDS ($ndsparamlist):
 # Note you can add custom parameters to the config file and to read them you must also add them here.
-# Custom parameters are "Portal" information and are the same for all clients eg "admin_email" and "location" 
+# Custom parameters are "Portal" information and are the same for all clients eg "admin_password" and "location" 
 ndscustomparams=""
 ndscustomimages=""
 ndscustomfiles=""
@@ -297,16 +249,16 @@ additionalthemevars="username password"
 
 fasvarlist="$fasvarlist $additionalthemevars"
 
-# Title of this theme:
-title="theme_user-email-login-basic"
+# You can choose to define a custom string. This will be b64 encoded and sent to openNDS.
+# There it will be made available to be displayed in the output of ndsctl json as well as being sent
+#	to the BinAuth post authentication processing script if enabled.
+# Set the variable $binauth_custom to the desired value.
+# Values set here can be overridden by the themespec file
 
-# You can choose to send a custom data string to BinAuth. Set the variable $binauth_custom to the desired value.
-# Note1: As this script runs on the openNDS router and creates its own log file, there is little point also enabling Binauth.
-#	BinAuth is intended more for use with EXTERNAL FAS servers that don't have direct access to the local router.
-#	Nevertheless it can be enabled at the same time as this script if so desired.
-# Note2: Spaces will be translated to underscore characters.
-# Note3: You must escape any quotes.
-#binauth_custom="$username=$username, password=$password"
+#binauth_custom="This is sample text sent from \"$title\" to \"BinAuth\" for post authentication processing."
+
+# Encode and activate the custom string
+#encode_custom
 
 # Set the user info string for logs (this can contain any useful information)
 userinfo="$title"

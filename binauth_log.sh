@@ -1,6 +1,6 @@
 #!/bin/sh
-#Copyright (C) The openNDS Contributors 2004-2021
-#Copyright (C) BlueWave Projects and Services 2015-2021
+#Copyright (C) The openNDS Contributors 2004-2022
+#Copyright (C) BlueWave Projects and Services 2015-2022
 #This software is released under the GNU GPL license.
 
 # This is an example script for BinAuth
@@ -170,9 +170,9 @@ configure_log_location
 # Get the action method from NDS ie the first command line argument.
 #
 # Possible values are:
-# "auth_client" - NDS requests validation of the client
-# "client_auth" - NDS has authorised the client
-# "client_deauth" - NDS has deauthenticated the client
+# "auth_client" - NDS requests validation of the client (legacy - deprecated)
+# "client_auth" - NDS has authorised the client (legacy - deprecated)
+# "client_deauth" - NDS has deauthenticated the client on request (logout)
 # "idle_deauth" - NDS has deauthenticated the client because the idle timeout duration has been exceeded
 # "timeout_deauth" - NDS has deauthenticated the client because the session length duration has been exceeded
 # "downquota_deauth" - NDS has deauthenticated the client because the client's download quota has been exceeded
@@ -182,30 +182,28 @@ configure_log_location
 # "shutdown_deauth" - NDS has deauthenticated the client because it received a shutdown command
 #
 action=$1
-
 if [ $action = "auth_client" ]; then
 	# Arguments passed are as follows
 	# $1 method
 	# $2 client mac
-	# $3 legacy1 (previously username)
-	# $4 legacy2 (previously password)
-	# $5 originurl (redir)
-	# $6 client useragent
-	# $7 client ip
-	# $8 client token
-	# $9 custom data string
+	# $3 originurl (aka redir, this is the query string returned to openNDS when auth_client is requested - not very useful so not usually logged)
+	# $4 client useragent
+	# $5 client ip
+	# $6 client token
+	# $7 custom data string
 
-	# redir, useragent and customdata are url-encoded, so decode:
-	redir_enc=$5
-	redir=$(printf "${redir_enc//%/\\x}")
-	useragent_enc=$6
-	useragent=$(printf "${useragent_enc//%/\\x}")
-	customdata_enc=$9
-	customdata=$(printf "${customdata_enc//%/\\x}")
-
-	log_entry="method=$1, clientmac=$2, clientip=$7, legacy1=$3, legacy2=$4, redir=$redir, useragent=$useragent, token=$8, custom=$customdata"
-
-elif [ $action = "ndsctl_auth" ]; then
+	custom_url_decoded=$(printf "${7//%/\\x}")
+	customdata=$(ndsctl b64decode "$custom_url_decoded")
+	log_entry="method=$1, clientmac=$2, clientip=$5, useragent=$4, token=$6, $customdata"
+	
+	###########################################################
+	###################### for debugging ######################
+	datetime=$(date)
+	echo "$datetime Im in with $2 $action $customdata" >> "/mnt/sda1/in.log"
+	############################################################
+    ############################################################
+	
+elif [ $action = "client_auth" ]; then
 	# Arguments passed are as follows
 	# $1 method
 	# $2 client mac
@@ -216,17 +214,40 @@ elif [ $action = "ndsctl_auth" ]; then
 	# $7 client token
 	# $8 custom data string
 	
-	customdata_enc=$8
-	customdata=$(printf "${customdata_enc//%/\\x}")
-	###
-	# for debugging
-	datetime=$(date)
-	echo "$datetime Im in with $2 $action $customdata_enc" >> "/mnt/sda1/in.log"
-	###
-	
-	
-	log_entry="method=$1, clientmac=$2, bytes_incoming=$3, bytes_outgoing=$4, session_start=$5, session_end=$6, token=$7, custom=$customdata_enc"
+	# Build the log entry:
 
+	custom_url_decoded=$(printf "${8//%/\\x}")
+	customdata=$(ndsctl b64decode "$custom_url_decoded")
+	log_entry="method=$1, clientmac=$2, bytes_incoming=$3, bytes_outgoing=$4, session_start=$5, session_end=$6, token=$7, $customdata"
+
+	###########################################################
+	###################### for debugging ######################
+	datetime=$(date)
+	echo "$datetime Im in with $2 $action $customdata" >> "/mnt/sda1/in.log"
+	############################################################
+    ############################################################
+	
+elif [ $action = "ndsctl_auth" ]; then
+	# Arguments passed are as follows
+	# $1 method
+	# $2 client mac
+	# $3 bytes incoming
+	# $4 bytes outgoing
+	# $5 session start time
+	# $6 session end time
+	# $7 client token
+	# $8 custom data string
+	custom_url_decoded=$(printf "${8//%/\\x}")
+	customdata=$(ndsctl b64decode "$custom_url_decoded")
+	
+	log_entry="method=$1, clientmac=$2, bytes_incoming=$3, bytes_outgoing=$4, session_start=$5, session_end=$6, token=$7, $customdata"
+
+	###########################################################
+	###################### for debugging ######################
+	datetime=$(date)
+	echo "$datetime Im in with $2 $action $customdata" >> "/mnt/sda1/in.log"
+	############################################################
+    ############################################################
 else
 	# All other methods
 	# Arguments passed are as follows
@@ -237,15 +258,24 @@ else
 	# $5 session start time
 	# $6 session end time
 	# $7 client token
+	# $8 custom data string
+	
+	custom_url_decoded=$(printf "${8//%/\\x}")
+	customdata=$(ndsctl b64decode "$custom_url_decoded")
+	log_entry="method=$1, clientmac=$2, bytes_incoming=$3, bytes_outgoing=$4, session_start=$5, session_end=$6, token=$7, $customdata"
 
+
+	###########################################################
+	###################### for debugging ######################
 	datetime=$(date)
-	currentUser=$(cat /tmp/ndslog/binauthlog.log | awk -F "token=$7" 'NF>1{print $2}'| awk -F"custom=" 'NF>1{print $2}' | awk -F", " '{print $1}' | sort |uniq)
+	currentUser=$(cat /tmp/ndslog/binauthlog.log | awk -F "token=$7" 'NF>1{print $2}'| awk -F"username=" 'NF>1{print $2}' | awk -F", " '{print $1}' | sort |uniq)
 	totalUsed=$((($3+$4)/1048576))
-	###
-	# for debugging
 	echo "$datetime Im out with $2 $action $currentUser $totalUsed MB" >> "/mnt/sda1/out.log"
-	###
+	############################################################
+    ############################################################
 
+	############################################################
+	###############  calculating the quota used  ###############
 	file="/mnt/sda1/users.txt"
 	cp $file "/mnt/sda1/users_tmp.txt"
 	while read user pw aq; do
@@ -258,9 +288,11 @@ else
 		fi
 	done < "/mnt/sda1/users_tmp.txt"
 	rm "/mnt/sda1/users_tmp.txt"
-	log_entry="method=$1, clientmac=$2, bytes_incoming=$3, bytes_outgoing=$4, session_start=$5, session_end=$6, token=$7"
-fi
+	############################################################
+	############################################################
+	
 
+fi
 # In the case of ThemeSpec, get the client id information from the cid database
 # Client variables found in the database are:
 # 
@@ -268,6 +300,7 @@ fi
 # clientmac
 # gatewayname
 # version
+# client_type
 # hid
 # gatewayaddress
 # gatewaymac
@@ -295,7 +328,7 @@ if [ ! -z "$cidfile" ]; then
 	. $mountpoint/ndscids/$cidfile
 
 	# Add a selection of client data variables to the log entry
-	log_entry="$log_entry, gatewayname=$gatewayname, ndsversion=$version, originurl=$originurl"
+	log_entry="$log_entry, client_type=$client_type, gatewayname=$gatewayname, ndsversion=$version, originurl=$originurl"
 else
 	clientmac=$2
 fi
