@@ -50,7 +50,7 @@ Every connected Device to any account it will be disconnect every 12 hours you c
 
       then go to the folder directory and open terminal and run this :
 
-          scp opennds.txt root@192.168.1.1:/etc/config/opennds
+          scp opennds.sh root@192.168.1.1:/etc/config/opennds
           scp -r bootstrap root@192.168.1.1:/etc/opennds/htdocs
           scp binauth_log.sh root@192.168.1.1:/usr/lib/opennds
           scp check_devices.sh root@192.168.1.1:/usr/lib/opennds
