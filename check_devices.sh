@@ -89,8 +89,10 @@ check_account() {
 		fi
 		parse_json
 		if [ "$state" = "Authenticated"  ]; then
+			up=$(($upload_this_session/1024))
+			down$(($download_this_session)/1024))
 			total=$(($total+($upload_this_session+$download_this_session)/1024))
-			echo "$total $upload_this_session $download_this_session"
+			echo "$total $up $down"
 		fi
 	done
 }

@@ -71,7 +71,7 @@ Every connected Device to any account it will be disconnect every 12 hours you c
 3. Check the files :
 
       1. check those files  ```/usr/lib/opennds/bin/binauth_log.sh``` and ```/usr/lib/opennds/bin/mythemespec.sh```
-            and ```/usr/lib/check_devices.sh``` and for every ```/mnt/sda1``` change it for your mount point.
+            and ```/usr/lib/opennds/check_devices.sh``` and for every ```/mnt/sda1``` change it for your mount point.
       2. users.txt it should be something like this
         
               
@@ -79,10 +79,10 @@ Every connected Device to any account it will be disconnect every 12 hours you c
               ahmed   ahmed123   1024
               guest   guest      1024 
               
-      3. /etc/config/opennds : option authidletimeout '720' change the `720` to any time you prefer so the device automaticly disconnect from the account (time in minutes)
-4. Now you have to turn on the script that will check on the accounts every 10 mins,search for scheduling for your operating system
+      3. /etc/config/opennds : option authidletimeout '60' change the `60` to any time you prefer so the device automaticly disconnect from the account (time in minutes)
+4. Now you have to turn on the script that will check on the accounts every 5 mins,search for scheduling for your operating system
         
-    ```*/10 * * * * /bin/sh /usr/bin/check_devices.sh```
+    ```*/5 * * * * /bin/sh /usr/lib/opennds/check_devices.sh```
             
     for openwrt check this link for more info https://openwrt.org/docs/guide-user/base-system/cron
 5. Thats's it everything should be working right now
